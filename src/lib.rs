@@ -1,10 +1,33 @@
 use pgx::*;
+use serde::{Deserialize, Serialize};
 
 pg_module_magic!();
 
+#[derive(Serialize, Deserialize)]
+struct JsonStructure {
+    tables: Vec[Table],
+}
+
+#[derive(Serialize, Deserialize)]
+struct Table {
+    name: String,
+    attributes: Vec[Attribute],
+}
+
+#[derive(Serialize, Deserialize)]
+struct Attribute {
+    name: String,
+    data_type: String,
+    native_type: String,
+}
+
 #[pg_extern]
-fn hello_jgres() -> &'static str {
-    "Hello, jgres"
+fn runJson(path: &str) -> String {
+    let contents = fs::read_to_string(filename)
+        .expect("Something went wrong reading the file");
+
+    let parsed: JsonStructure = serde_json::from_str(&contents).unwrap();
+    return parsed.success
 }
 
 #[cfg(any(test, feature = "pg_test"))]
