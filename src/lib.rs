@@ -1,33 +1,15 @@
 use pgx::*;
-use serde::{Deserialize, Serialize};
+
+pub mod json_loader;
+use crate::json_loader::provider::JsonProvider;
 
 pg_module_magic!();
 
-#[derive(Serialize, Deserialize)]
-struct JsonStructure {
-    tables: Vec[Table],
-}
-
-#[derive(Serialize, Deserialize)]
-struct Table {
-    name: String,
-    attributes: Vec[Attribute],
-}
-
-#[derive(Serialize, Deserialize)]
-struct Attribute {
-    name: String,
-    data_type: String,
-    native_type: String,
-}
-
 #[pg_extern]
-fn runJson(path: &str) -> String {
-    let contents = fs::read_to_string(filename)
-        .expect("Something went wrong reading the file");
+fn run_json(path: &str) -> String {
+    let json_provider = JsonProvider::new(path);
 
-    let parsed: JsonStructure = serde_json::from_str(&contents).unwrap();
-    return parsed.success
+    return json_provider.load_json();
 }
 
 #[cfg(any(test, feature = "pg_test"))]
@@ -36,8 +18,8 @@ mod tests {
     use pgx::*;
 
     #[pg_test]
-    fn test_hello_jgres() {
-        assert_eq!("Hello, jgres", crate::hello_jgres());
+    fn test_run_json() {
+        assert_eq!("bora", crate::run_json("/home/hizagi/projects/jgres/test.json"));
     }
 
 }

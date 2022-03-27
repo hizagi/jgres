@@ -1,0 +1,17 @@
+{
+    "tables": [
+        {
+            "name": "bora",
+            "attributes": [
+                {
+                    "name": "test",
+                    "data_type": "string"
+                },
+                {
+                    "name": "number_test",
+                    "native_type": "int"
+                }
+            ]
+        }
+    ]
+}
