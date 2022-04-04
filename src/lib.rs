@@ -1,6 +1,8 @@
 use pgx::*;
 
 pub mod json_loader;
+pub mod errors;
+
 use crate::json_loader::provider::JsonProvider;
 
 pg_module_magic!();
@@ -19,7 +21,7 @@ mod tests {
 
     #[pg_test]
     fn test_run_json() {
-        assert_eq!("bora", crate::run_json("/home/hizagi/projects/jgres/test.json"));
+        assert_eq!("orabolas", crate::run_json("/home/hizagi/projects/jgres/test.json"));
     }
 
 }

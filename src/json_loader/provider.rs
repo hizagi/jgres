@@ -1,5 +1,6 @@
 use std::fs;
 use crate::json_loader::entities::JsonStructure;
+use crate::json_loader::postgres_adapter::PostgresAdapter;
 
 #[derive(Default)]
 pub struct JsonProvider {
@@ -19,10 +20,6 @@ impl JsonProvider {
 
         let parsed: JsonStructure = serde_json::from_str(&contents).unwrap();
 
-        if let Some(name) = &parsed.tables[0].attributes[0].data_type {
-            return String::from(name);
-        } else {
-            return String::from("")
-        }
+        return PostgresAdapter::json_structure_to_sql(parsed)
     }
 }
