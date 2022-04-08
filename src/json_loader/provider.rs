@@ -20,6 +20,8 @@ impl JsonProvider {
 
         let parsed: JsonStructure = serde_json::from_str(&contents).unwrap();
 
-        return PostgresAdapter::json_structure_to_sql(parsed)
+        let postgres_adapter = PostgresAdapter::new();
+
+        return postgres_adapter.json_structure_to_sql(parsed);
     }
 }
