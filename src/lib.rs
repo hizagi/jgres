@@ -21,7 +21,7 @@ mod tests {
 
     #[pg_test]
     fn test_run_json() {
-        assert_eq!("orabolas", crate::run_json("/home/hizagi/projects/jgres/test.json"));
+        assert_eq!("CREATE TABLE ora (id);CREATE TABLE bolas (id);", crate::run_json("/home/hizagi/projects/jgres/test.json"));
     }
 
 }
