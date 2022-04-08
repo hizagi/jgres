@@ -2,7 +2,7 @@ use std::fmt;
 
 #[derive(Clone)]
 pub struct InvalidJsonStructure {
-    error_msg: String
+    pub error_msg: String
 }
 
 impl fmt::Display for InvalidJsonStructure {

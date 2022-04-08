@@ -2,8 +2,8 @@ use std::fmt;
 
 #[derive(Clone)]
 pub struct InvalidTableDefinition {
-    tablename: String
-    reason: String
+    pub tablename: String,
+    pub reason: String
 }
 
 impl fmt::Display for InvalidTableDefinition {
