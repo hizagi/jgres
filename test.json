@@ -1,30 +1,60 @@
 {
-    "tables": [
-        {
-            "name": "ora",
+    "tables": {
+        "products": {
             "attributes": [
                 {
-                    "name": "test",
-                    "data_type": "varchar"
+                    "name": "id",
+                    "data_type": "int",
+                    "is_primary": true,
+                    "not_null": true
                 },
                 {
-                    "name": "number_test",
-                    "data_type": "int"
+                    "name": "name",
+                    "data_type": "varchar",
+                    "not_null": true
+                },
+                {
+                    "name": "quantity",
+                    "data_type": "int",
+                    "not_null": true
+                },
+                {
+                    "name": "value",
+                    "data_type": "int",
+                    "not_null": true
                 }
             ]
         },
-        {
-            "name": "bolas",
+        "customer": {
             "attributes": [
                 {
-                    "name": "test",
-                    "data_type": "varchar"
+                    "name": "id",
+                    "data_type": "int",
+                    "is_primary": true,
+                    "not_null": true
                 },
                 {
-                    "name": "number_test",
-                    "data_type": "int"
+                    "name": "name",
+                    "data_type": "varchar",
+                    "not_null": true
+                },
+                {
+                    "name": "bith_date",
+                    "data_type": "varchar",
+                    "not_null": true
                 }
             ]
+        }
+    },
+    "dataset": [
+        {
+            "tablename": "products",
+            "data": {
+                "id": 12,
+                "name": "product1",
+                "quantity": 11,
+                "value": 1200
+            }
         }
     ]
 }

@@ -23,6 +23,7 @@ mod tests {
 
     #[pg_test]
     fn test_run_json() {
+        crate::run_json("/home/hizagi/projects/jgres/test.json")
     }
 
 }
