@@ -8,10 +8,12 @@ use crate::json_loader::provider::JsonProvider;
 pg_module_magic!();
 
 #[pg_extern]
-fn run_json(path: &str) -> String {
+fn run_json(path: &str) {
     let json_provider = JsonProvider::new(path);
 
-    return json_provider.load_json();
+    let sql: String = json_provider.load_json();
+
+    Spi::run(sql.as_str())
 }
 
 #[cfg(any(test, feature = "pg_test"))]
@@ -21,7 +23,6 @@ mod tests {
 
     #[pg_test]
     fn test_run_json() {
-        assert_eq!("CREATE TABLE ora (test string,number_test int);CREATE TABLE bolas (test string,number_test int);", crate::run_json("/home/hizagi/projects/jgres/test.json"));
     }
 
 }
