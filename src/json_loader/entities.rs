@@ -5,7 +5,8 @@ use serde::{Deserialize, Serialize};
 pub struct Attribute {
     pub name: String,
     pub data_type: Option<String>,
-    pub native_type: Option<String>,
+    pub is_primary: Option<bool>,
+    pub not_null: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize)]

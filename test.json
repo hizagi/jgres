@@ -9,7 +9,7 @@
                 },
                 {
                     "name": "number_test",
-                    "native_type": "int"
+                    "data_type": "int"
                 }
             ]
         },
@@ -22,7 +22,7 @@
                 },
                 {
                     "name": "number_test",
-                    "native_type": "int"
+                    "data_type": "int"
                 }
             ]
         }
