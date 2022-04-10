@@ -1,6 +1,7 @@
 {
-    "tables": {
-        "products": {
+    "tables": [
+        {
+            "name": "products",
             "attributes": [
                 {
                     "name": "id",
@@ -25,7 +26,8 @@
                 }
             ]
         },
-        "customer": {
+        {
+            "name": "customers",
             "attributes": [
                 {
                     "name": "id",
@@ -45,7 +47,7 @@
                 }
             ]
         }
-    },
+    ],
     "dataset": [
         {
             "tablename": "products",

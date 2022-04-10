@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-use serde_json::{Value};
+use serde_json::Value;
 use std::collections::HashMap;
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -12,19 +12,18 @@ pub struct Attribute {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Data {
-   pub tablename: String,
-   pub data: HashMap<String, Value>,
+    pub tablename: String,
+    pub data: HashMap<String, Value>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-pub struct TableContent {
-    pub attributes: Vec<Attribute>
-} 
-
-pub type Table = HashMap<String,TableContent>;
+pub struct Table {
+    pub name: String,
+    pub attributes: Vec<Attribute>,
+}
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct JsonStructure {
-    pub tables: Table,
+    pub tables: Vec<Table>,
     pub dataset: Vec<Data>,
 }
