@@ -6,6 +6,7 @@ pub mod json_loader;
 
 use crate::json_loader::ddl_provider::DDLProvider;
 use crate::json_loader::entities::JsonStructure;
+use std::collections::HashMap;
 
 pg_module_magic!();
 
@@ -15,15 +16,17 @@ fn load_json(path: &str) -> JsonStructure {
     return serde_json::from_str(&contents).unwrap();
 }
 
-fn generate_ddl_from_json(parsed_json: JsonStructure) -> (Has String) {
+fn generate_ddl_from_json(parsed_json: JsonStructure) -> (HashMap<String, String>, String) {
     let ddl_provider: DDLProvider = DDLProvider::new();
-    return ddl_provider.generate_create_table(parsed_json);
+    let (table_hash_map, query) = ddl_provider.generate_create_table(parsed_json);
+
+    return (table_hash_map.to_owned(), query)
 }
 
 #[pg_extern]
 fn run_json(path: &str) {
     let parsed_json: JsonStructure = load_json(path);
-    let ddl_sql: String = generate_ddl_from_json(parsed_json);
+    let (_attribute_map, ddl_sql) = generate_ddl_from_json(parsed_json);
 
     Spi::run(ddl_sql.as_str());
 }

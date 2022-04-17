@@ -1,15 +1,22 @@
 use crate::errors::invalid_attribute_definition::InvalidAttributeDefinition;
 use crate::errors::invalid_table_definition::InvalidTableDefinition;
 use crate::json_loader::entities::{Attribute, JsonStructure};
+use std::collections::HashMap;
 
-pub struct DDLProvider {}
+pub struct DDLProvider {
+    pub attribute_map: HashMap<String, String>,
+}
 
 impl DDLProvider {
     pub fn new() -> Self {
-        Self {}
+        let map = HashMap::new();
+        Self { attribute_map: map }
     }
 
-    pub fn generate_create_table(&self, json_structure: JsonStructure) -> String {
+    pub fn generate_create_table(
+        &self,
+        json_structure: JsonStructure,
+    ) -> (&HashMap<String, String>, String) {
         let mut query = "".to_owned();
         let tables = json_structure.tables;
 
@@ -20,7 +27,7 @@ impl DDLProvider {
             query.push_str(&table_query);
         }
 
-        return query;
+        return (&self.attribute_map, query);
     }
 
     fn table_json_to_sql(
