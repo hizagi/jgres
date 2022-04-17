@@ -5,8 +5,8 @@ pub mod errors;
 pub mod json_loader;
 
 use crate::json_loader::ddl_provider::DDLProvider;
-use crate::json_loader::entities::JsonStructure;
-use std::collections::HashMap;
+use crate::json_loader::dml_provider::DMLProvider;
+use crate::json_loader::entities::{JsonStructure, TableMap};
 
 pg_module_magic!();
 
@@ -16,11 +16,14 @@ fn load_json(path: &str) -> JsonStructure {
     return serde_json::from_str(&contents).unwrap();
 }
 
-fn generate_ddl_from_json(parsed_json: JsonStructure) -> (HashMap<String, String>, String) {
+fn generate_ddl_from_json(parsed_json: JsonStructure) -> (TableMap, String) {
     let ddl_provider: DDLProvider = DDLProvider::new();
-    let (table_hash_map, query) = ddl_provider.generate_create_table(parsed_json);
+    return ddl_provider.generate_create_table(parsed_json);
+}
 
-    return (table_hash_map.to_owned(), query)
+fn generate_dml_from_json(parsed_json: JsonStructure) -> String {
+    let dml_provider: DMLProvider = DMLProvider::new();
+    return dml_provider.generate_table_inserts(parsed_json);
 }
 
 #[pg_extern]
@@ -35,6 +38,12 @@ fn run_json(path: &str) {
 #[pg_schema]
 mod tests {
     use pgx::*;
+
+    #[pg_test]
+    fn test_load_dml_json() {
+        let json_structure = crate::load_json("/home/hizagi/projects/jgres/test.json");
+        assert_eq!("INSERT INTO products (id,name,quantity,value) VALUES (12,\"product1\",11,1200);", crate::generate_dml_from_json(json_structure))
+    }
 
     #[pg_test]
     fn test_load_ddl_json() {}

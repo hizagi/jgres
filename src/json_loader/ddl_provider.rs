@@ -1,33 +1,35 @@
 use crate::errors::invalid_attribute_definition::InvalidAttributeDefinition;
 use crate::errors::invalid_table_definition::InvalidTableDefinition;
-use crate::json_loader::entities::{Attribute, JsonStructure};
-use std::collections::HashMap;
+use crate::json_loader::entities::{Attribute, JsonStructure, TableMap};
+use std::collections::BTreeMap;
 
-pub struct DDLProvider {
-    pub attribute_map: HashMap<String, String>,
-}
+pub struct DDLProvider {}
 
 impl DDLProvider {
     pub fn new() -> Self {
-        let map = HashMap::new();
-        Self { attribute_map: map }
+        Self {}
     }
 
-    pub fn generate_create_table(
-        &self,
-        json_structure: JsonStructure,
-    ) -> (&HashMap<String, String>, String) {
+    pub fn generate_create_table(&self, json_structure: JsonStructure) -> (TableMap, String) {
         let mut query = "".to_owned();
         let tables = json_structure.tables;
+        let mut table_attributes = BTreeMap::new();
 
         for table in tables.iter() {
+            let attribute_names: Vec<String> = table
+                .attributes
+                .iter()
+                .map(|attribute| String::from(attribute.name.as_str()))
+                .collect::<Vec<String>>();
+
             let table_query = self
                 .table_json_to_sql(table.name.to_owned(), &table.attributes)
                 .unwrap_or_else(|error| panic!("Problem: {:?}", error));
             query.push_str(&table_query);
+            table_attributes.insert(String::from(table.name.as_str()), attribute_names);
         }
 
-        return (&self.attribute_map, query);
+        return (table_attributes, query);
     }
 
     fn table_json_to_sql(
@@ -130,5 +132,14 @@ impl DDLProvider {
         }
 
         return Ok(attribute_query);
+    }
+}
+
+
+#[cfg(any(test, feature = "pg_test"))]
+mod tests {
+    #[test]
+    fn test_json_structure_to_sql() {
+        assert!(true);
     }
 }

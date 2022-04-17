@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Attribute {
@@ -13,7 +13,7 @@ pub struct Attribute {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Data {
     pub tablename: String,
-    pub data: HashMap<String, Value>,
+    pub data: BTreeMap<String, Value>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -27,3 +27,5 @@ pub struct JsonStructure {
     pub tables: Vec<Table>,
     pub dataset: Vec<Data>,
 }
+
+pub type TableMap = BTreeMap<String, Vec<String>>;
