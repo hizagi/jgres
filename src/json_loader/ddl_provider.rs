@@ -10,9 +10,9 @@ impl DDLProvider {
         Self {}
     }
 
-    pub fn generate_create_table(&self, json_structure: JsonStructure) -> (TableMap, String) {
+    pub fn generate_create_table(&self, json_structure: &JsonStructure) -> (TableMap, String) {
         let mut query = "".to_owned();
-        let tables = json_structure.tables;
+        let tables = &json_structure.tables;
         let mut table_attributes = BTreeMap::new();
 
         for table in tables.iter() {

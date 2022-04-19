@@ -11,9 +11,9 @@ impl DMLProvider {
         Self {}
     }
 
-    pub fn generate_table_inserts(&self, json_structure: JsonStructure) -> String {
+    pub fn generate_table_inserts(&self, json_structure: &JsonStructure) -> String {
         let mut query = "".to_owned();
-        let dataset = json_structure.dataset;
+        let dataset = &json_structure.dataset;
 
         for dataset_item in dataset.iter() {
             let table_query = self
@@ -22,7 +22,9 @@ impl DMLProvider {
             query.push_str(&table_query);
         }
 
-        return query;
+        let clean_query = str::replace(query.as_str(), "\"", "\'");
+
+        return clean_query;
     }
 
     fn data_item_json_to_sql(

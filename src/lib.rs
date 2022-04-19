@@ -16,22 +16,26 @@ fn load_json(path: &str) -> JsonStructure {
     return serde_json::from_str(&contents).unwrap();
 }
 
-fn generate_ddl_from_json(parsed_json: JsonStructure) -> (TableMap, String) {
+fn generate_ddl_from_json(parsed_json: &JsonStructure) -> (TableMap, String) {
     let ddl_provider: DDLProvider = DDLProvider::new();
-    return ddl_provider.generate_create_table(parsed_json);
+    return ddl_provider.generate_create_table(parsed_json.to_owned());
 }
 
-fn generate_dml_from_json(parsed_json: JsonStructure) -> String {
+fn generate_dml_from_json(parsed_json: &JsonStructure) -> String {
     let dml_provider: DMLProvider = DMLProvider::new();
-    return dml_provider.generate_table_inserts(parsed_json);
+    return dml_provider.generate_table_inserts(parsed_json.to_owned());
 }
 
 #[pg_extern]
 fn run_json(path: &str) {
     let parsed_json: JsonStructure = load_json(path);
-    let (_attribute_map, ddl_sql) = generate_ddl_from_json(parsed_json);
+    let (_attribute_map, ddl_sql) = generate_ddl_from_json(&parsed_json);
 
     Spi::run(ddl_sql.as_str());
+
+    let dml_sql = generate_dml_from_json(&parsed_json);
+    
+    Spi::run(dml_sql.as_str());
 }
 
 #[cfg(any(test, feature = "pg_test"))]
@@ -42,7 +46,7 @@ mod tests {
     #[pg_test]
     fn test_load_dml_json() {
         let json_structure = crate::load_json("/home/hizagi/projects/jgres/test.json");
-        assert_eq!("INSERT INTO products (id,name,quantity,value) VALUES (12,\"product1\",11,1200);", crate::generate_dml_from_json(json_structure))
+        assert_eq!("INSERT INTO products (id,name,quantity,value) VALUES (12,\'product1\',11,1200);", crate::generate_dml_from_json(&json_structure))
     }
 
     #[pg_test]
