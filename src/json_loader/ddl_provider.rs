@@ -11,7 +11,7 @@ impl DDLProvider {
     }
 
     pub fn generate_create_table(&self, json_structure: &JsonStructure) -> (TableMap, String) {
-        let mut query = "".to_owned();
+        let mut query = "-- Table Definitions \n\n".to_owned();
         let tables = &json_structure.tables;
         let mut table_attributes = BTreeMap::new();
 
@@ -26,6 +26,7 @@ impl DDLProvider {
                 .table_json_to_sql(table.name.to_owned(), &table.attributes)
                 .unwrap_or_else(|error| panic!("Problem: {:?}", error));
             query.push_str(&table_query);
+            query.push_str("\n\n");
             table_attributes.insert(String::from(table.name.as_str()), attribute_names);
         }
 

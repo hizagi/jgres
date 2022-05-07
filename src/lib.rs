@@ -1,5 +1,7 @@
 use pgx::*;
 use std::fs;
+use std::fs::File;
+use std::io::{Write};
 
 pub mod errors;
 pub mod json_loader;
@@ -30,18 +32,43 @@ fn generate_dml_from_json(parsed_json: &JsonStructure) -> String {
 fn run_json(path: &str) {
     let parsed_json: JsonStructure = load_json(path);
     let (_attribute_map, ddl_sql) = generate_ddl_from_json(&parsed_json);
-
-    match Spi::get_one::<&str>(ddl_sql.as_str()) {
-        None => {
-            info!("errror");
-        }
-        _ => {
-            info!("errror");
-        }
-    };
+    Spi::run(ddl_sql.as_str());
 
     let dml_sql = generate_dml_from_json(&parsed_json);
     Spi::run(dml_sql.as_str());
+}
+
+#[pg_extern]
+fn plan_json(path: &str) -> String {
+    let parsed_json: JsonStructure = load_json(path);
+    let (_attribute_map, ddl_sql) = generate_ddl_from_json(&parsed_json);
+    let dml_sql = generate_dml_from_json(&parsed_json);
+
+    let output: String = format!("{}{}", ddl_sql, dml_sql);
+
+    return output
+}
+
+#[pg_extern]
+fn plan_json_with_output(path: &str, output: &str) {
+    let parsed_json: JsonStructure = load_json(path);
+    let (_attribute_map, ddl_sql) = generate_ddl_from_json(&parsed_json);
+    let dml_sql = generate_dml_from_json(&parsed_json);
+
+    let file_content: String = format!("{}{}", ddl_sql, dml_sql);
+
+    let mut output_file: File; 
+    
+    match File::create(output) {
+        Err(why) => {
+            panic!("unable to create/read output file: {:?}", why);
+        }
+        Ok(file) => {
+            output_file = file;
+        }
+    };
+
+    write!(output_file, "{}", file_content);
 }
 
 #[cfg(any(test, feature = "pg_test"))]
