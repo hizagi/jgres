@@ -31,10 +31,16 @@ fn run_json(path: &str) {
     let parsed_json: JsonStructure = load_json(path);
     let (_attribute_map, ddl_sql) = generate_ddl_from_json(&parsed_json);
 
-    Spi::run(ddl_sql.as_str());
+    match Spi::get_one::<&str>(ddl_sql.as_str()) {
+        None => {
+            info!("errror");
+        }
+        _ => {
+            info!("errror");
+        }
+    };
 
     let dml_sql = generate_dml_from_json(&parsed_json);
-    
     Spi::run(dml_sql.as_str());
 }
 
@@ -46,7 +52,10 @@ mod tests {
     #[pg_test]
     fn test_load_dml_json() {
         let json_structure = crate::load_json("/home/hizagi/projects/jgres/test.json");
-        assert_eq!("INSERT INTO products (id,name,quantity,value) VALUES (12,\'product1\',11,1200);", crate::generate_dml_from_json(&json_structure))
+        assert_eq!(
+            "INSERT INTO products (id,name,quantity,value) VALUES (12,\'product1\',11,1200);",
+            crate::generate_dml_from_json(&json_structure)
+        )
     }
 
     #[pg_test]
